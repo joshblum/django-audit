@@ -6,8 +6,8 @@ django-audit
 To get started:
 First setup a virtual environment
 
-###  virtualenv venv --distribute
+`virtualenv venv --distribute`
 
 Then install the requirements:
 
-### pip install -r requirements.txt
+`pip install -r requirements.txt`
