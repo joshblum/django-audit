@@ -17,3 +17,5 @@ Then install the requirements:
 `python manange.py sycndb`
 
 `python manage.py runserver`
+
+Navigate to "http://localhost:8000/forum/"
