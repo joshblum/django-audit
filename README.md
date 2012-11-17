@@ -8,6 +8,12 @@ First setup a virtual environment
 
 `virtualenv venv --distribute`
 
+`source venv/bin/activate`
+
 Then install the requirements:
 
 `pip install -r requirements.txt`
+
+`python manange.py sycndb`
+
+`python manage.py runserver`
