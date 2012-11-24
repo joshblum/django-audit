@@ -1,21 +1,16 @@
 django-audit
 ============
 
-6.858 Final Project
+### 6.858 Final Project
 
-To get started:
-First setup a virtual environment
+Get started by running `sh setup.sh` 
 
-`virtualenv venv --distribute`
+This will setup a virtual environment and install the required packages.
 
-`source venv/bin/activate`
-
-Then install the requirements:
-
-`pip install -r requirements.txt`
-
-`python manange.py sycndb`
+To get the server running run the following command.
 
 `python manage.py runserver`
 
-Navigate to "http://localhost:8000/forum/"
+If you are registering new accounts you can run the local mail server as follows.
+
+`python manage.py local_mail`
