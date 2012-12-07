@@ -141,6 +141,7 @@ INSTALLED_APPS = (
 
     #3rd-party
     'django_evolution',
+    'audit_log',
     'registration',
     'kronos',
     
