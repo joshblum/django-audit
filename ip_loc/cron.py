@@ -51,14 +51,14 @@ class DownloadIPList(Job):
     def read_data(self, dest):
         self.stdout.write("Reading data from %s\n" % dest)
         
-        def parseip(ip):
-            ip = int(ip)
-            output = ""
-            for i in range (3,-1,-1):
-                div = pow(256,i)
-                output += str(ip/div) +"."
-                ip = ip % div        
-            return output[0:-1]
+        # def parseip(ip):
+        #     ip = int(ip)
+        #     output = ""
+        #     for i in range (3,-1,-1):
+        #         div = pow(256,i)
+        #         output += str(ip/div) +"."
+        #         ip = ip % div        
+        #     return output[0:-1]
 
         def parseline(line):
             line = line.replace("\"", "").replace("\n","")
@@ -114,14 +114,13 @@ class DownloadTor(Job):
     def read_data(self, contents):
         self.stdout.write("Reading data from %s\n" % dest)
         
-        def parseip(ip):
-            ip = int(ip)
-            output = ""
+        def parseip(s):
+            ip = 0
+            c = s.split(".")
             for i in range (3,-1,-1):
-                div = pow(256,i)
-                output += str(ip/div) +"."
-                ip = ip % div        
-            return output[0:-1]
+                p = pow(256,i)
+                ip += int(c[abs(3-i)])*p  
+            return ip
 
         def parseline(line):
             line = line.replace("\"", "").replace("\n","")
