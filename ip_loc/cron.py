@@ -8,7 +8,7 @@ import zipfile
 DEFAULT_URL = "http://software77.net/geo-ip/?DL=2"
 DEFAULT_DIRECTORY = "/tmp"
 
-class DownloadIPs(Job):
+class DownloadIPList(Job):
     """
         Downloads and updates the IP address database
     """
@@ -86,5 +86,8 @@ class DownloadIPs(Job):
         self.stdout.write("Writing new data\n")
         IPtoLoc.objects.bulk_create(data)
 
-class DownloadIPs(Job):
-        
+class TorDownload(Job):
+    pass
+
+
+cronScheduler.register(DownloadIPList)
