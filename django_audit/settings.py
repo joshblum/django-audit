@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     
     #django-audit
     'forum',
+    'ip_loc',
 )
 
 # A sample logging configuration. The only tangible logging
