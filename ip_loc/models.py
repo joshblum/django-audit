@@ -9,3 +9,8 @@ class IPtoLoc(models.Model):
     def __unicode__(self):
         return "%s | %s : %s" %(ip_to, ip_fr, country_name)
 
+class TorNode(models.Model):
+    ip = models.CharField(max_length=15)
+
+    def __unicode__(self):
+        return "%s is a tor node" %(ip)

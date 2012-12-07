@@ -2,3 +2,4 @@ Django==1.4.1
 Markdown==2.2.1
 django-registration==0.8
 django-registration-defaults==0.3
+django_cron
