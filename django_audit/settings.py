@@ -141,6 +141,7 @@ INSTALLED_APPS = (
 
     #3rd-party
     'registration',
+    'django_cron'
     
     #django-audit
     'forum',
