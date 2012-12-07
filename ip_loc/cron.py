@@ -92,7 +92,7 @@ class DownloadTor(Job):
         TOR IP address database
     """
 
-    run_every = 5400 #every hour
+    run_every = 5400 #1.5 hours
 
     def job(self):
         url = DEFAULT_TOR_URL
@@ -142,9 +142,6 @@ class DownloadTor(Job):
     def add_data(self, data):
         self.stdout.write("Writing new data\n")
         Tor_Node.objects.bulk_create(data)
-
-        
-
 
 cronScheduler.register(DownloadIPList)
 cronScheduler.register(DownloadTor)
