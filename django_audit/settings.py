@@ -140,8 +140,9 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 
     #3rd-party
+    'django_evolution',
     'registration',
-    'django_cron'
+    'kronos',
     
     #django-audit
     'forum',

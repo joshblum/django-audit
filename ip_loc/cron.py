@@ -1,7 +1,14 @@
-from django_cron import cronScheduler
+import kronos
 
-from download_tor import DownloadTor
-from download_ip import DownloadIP
+from ip_loc.cron_tasks.download_tor import DownloadTor
+from ip_loc.cron_tasks.download_ip import DownloadIP
 
-cronScheduler.register(DownloadIP)
-cronScheduler.register(DownloadTor)
+@kronos.register("0 0 * * *")
+def daily_cron():
+    ip = DownloadIP()
+    ip.run()
+
+@kronos.register("0 * * * *")   
+def hourly_cron():
+    tor = DownloadTor()
+    tor.run()
