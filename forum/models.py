@@ -11,6 +11,8 @@ from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import escape
+from audit_log.models.fields import LastUserField
+from audit_log.models.managers import AuditLog
 try:
     from markdown import markdown
 except ImportError:
@@ -215,6 +217,8 @@ class Post(models.Model):
     body = models.TextField(_("Body"))
     body_html = models.TextField(editable=False)
     time = models.DateTimeField(_("Time"), blank=True, null=True)
+
+    audit_log = AuditLog()
 
     def save(self, force_insert=False, force_update=False):
         if not self.id:
