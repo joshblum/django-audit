@@ -50,6 +50,20 @@ class DownloadIPList(Job):
 
     def read_data(self, dest):
         self.stdout.write("Reading data from %s\n" % dest)
+        
+        def parseip(ip):
+            ip = int(ip)
+            output = ""
+            for i in range (3,-1,-1):
+                div = pow(256,i)
+                output += str(ip/div) +"."
+                ip = ip % div        
+            return output[0:-1]
+
+        def parseline(line):
+            line = line.replace("\"", "").replace("\n","")
+            params = line.split(",")
+            return params[0], params[1], params[4], params[6]
 
         f = open(dest)
 
@@ -77,7 +91,8 @@ class DownloadTor(Job):
     """
         TOR IP address database
     """
-    run_every = 5400 #every 1.5 hours
+
+    run_every = 5400 #every hour
 
     def job(self):
         url = DEFAULT_TOR_URL
@@ -98,6 +113,19 @@ class DownloadTor(Job):
 
     def read_data(self, contents):
         self.stdout.write("Reading data from %s\n" % dest)
+        
+        def parseip(ip):
+            ip = int(ip)
+            output = ""
+            for i in range (3,-1,-1):
+                div = pow(256,i)
+                output += str(ip/div) +"."
+                ip = ip % div        
+            return output[0:-1]
+
+        def parseline(line):
+            line = line.replace("\"", "").replace("\n","")
+            return line
 
         data = []
         for l in contents:
@@ -115,19 +143,7 @@ class DownloadTor(Job):
         self.stdout.write("Writing new data\n")
         Tor_Node.objects.bulk_create(data)
 
-def parseip(ip):
-    ip = int(ip)
-    output = ""
-    for i in range (3,-1,-1):
-        div = pow(256,i)
-        output += str(ip/div) +"."
-        ip = ip % div        
-    return output[0:-1]
-
-def parseline(line):
-    line = line.replace("\"", "").replace("\n","")
-    params = line.split(",")
-    return params[0], params[1], params[4], params[6]    
+        
 
 
 cronScheduler.register(DownloadIPList)
