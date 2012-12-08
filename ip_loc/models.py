@@ -12,19 +12,8 @@ class IPtoLoc(models.Model):
 
     date_created = models.DateTimeField(auto_now=True, default=datetime.now())
 
-    def ip_to_ccode(self, ip_check):
-        ip_check = parse_ip(ip_check)
-
-        if ip_check >= self.ip_to and ip_check <= self.ip_fr :
-		    return self.country_code
-        return None
-
-	def country_change(self, ip_old, ip_new):
-		return self.ip_to_ccode(ip_old) == self.ip_to_ccode(ip_new)
-
     def __unicode__(self):
         return "%s | %s : %s" %(self.ip_to, self.ip_fr, self.country_name)
-
 
 class TorNode(models.Model):
     ip = models.CharField(max_length=15)

@@ -1,5 +1,4 @@
 from ip_loc.models import *
-
 from ip_loc.helpers import std_to_decimal_ip as parse_ip
 
 import urllib
