@@ -15,8 +15,9 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
     url(r'^forum/', include('forum.urls')),
+    url(r'^todo/', include('todo.urls')),
 )
 
 urlpatterns += patterns('django_audit.views',
     url(r'accounts/profile', 'home'),
-    )
+)
