@@ -7,9 +7,10 @@ class DownloadTor():
     """
         TOR IP address database
     """
-    def __init__(self):
-
-        self.DEFAULT_TOR_URL = "https://www.dan.me.uk/torlist/"
+    def __init__(self, filename=None):
+        if not filename:
+            filename = "https://www.dan.me.uk/torlist/"
+        self.DEFAULT_TOR_URL = filename
 
     def run(self):
         url = self.DEFAULT_TOR_URL
@@ -22,12 +23,12 @@ class DownloadTor():
             print "Unable to read list"
 
     def get_data(self, url):
-        print "Downloading file"
+        print "Downloading tor list file"
         try:
             data = urllib.urlopen(url)
         except IOError, e:
             print "Can't retrieve %r: %s" % (url, e)
-            return None
+            raise IOError
         return data.readlines()
 
     def read_data(self, contents):

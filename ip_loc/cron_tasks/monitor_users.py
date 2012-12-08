@@ -59,6 +59,8 @@ class MonitorUsers():
             tor_nodes = []
             for obj in obj_list:
                 ip = obj.action_ip
+                obj.is_new = False
+                obj.save()
 
                 #convert to country code
                 code = ip_to_ccode(ip) 
@@ -69,7 +71,7 @@ class MonitorUsers():
 
                 #check if a tor node
                 if check_tor(ip):
-                    tor_nodes.append[ip]
+                    tor_nodes.append(ip)
 
             if len(c_codes) > 1:
                 country_flags.append({username : c_codes})
@@ -98,7 +100,8 @@ class MonitorUsers():
             Objects that have no user or empty IP fields are removed
         """
         objs.filter(action_ip=None).delete()
-        return objs
+
+        return objs.filter(is_new=True)
 
     def email_admin(self, flagged_users):
         """
@@ -120,6 +123,3 @@ class MonitorUsers():
 
     def _get_admins(self, admins):
         return [email for name, email in admins]
-
-
-

@@ -9,10 +9,12 @@ class DownloadIP():
     """
         Downloads and updates the IP address database
     """
-    run_every = 86400 #24 hours
-    def __init__(self):
 
-        self.DEFAULT_IP_URL = "http://software77.net/geo-ip/?DL=2"
+    def __init__(self, filename):
+        if not filename:
+            filename = "http://software77.net/geo-ip/?DL=2"
+        
+        self.DEFAULT_IP_URL = filename
         self.DEFAULT_IP_DIRECTORY = "/tmp"
 
     def run(self):
@@ -23,7 +25,7 @@ class DownloadIP():
         self.add_data(data)
 
     def get_unzipped(self, url, directory):
-        print "Downloading file"
+        print "Downloading IP list file"
         name = os.path.join(directory, 'tmp.zip')
         try:
             name, hdrs = urllib.urlretrieve(url, name)
@@ -33,7 +35,7 @@ class DownloadIP():
         try:
             z = zipfile.ZipFile(name)
         except zipfile.error, e:
-            self.stdout("Bad zipfile (from %r): %s" % (url, e))
+            print "Bad zipfile (from %r): %s" % (url, e)
             return
         for n in z.namelist():
             dest = os.path.join(directory, n)
