@@ -148,7 +148,7 @@ INSTALLED_APPS = (
     'kronos',
 
     #todosrc
-    # 'todosrc',
+    # 'todo',
     
     #django-audit
     'forum',
