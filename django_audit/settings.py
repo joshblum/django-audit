@@ -11,7 +11,7 @@ TEMPLATE_DEBUG = DEBUG
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" #print emails to terminal
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Admin', 'admin@example.com'),
 )
 
 MANAGERS = ADMINS

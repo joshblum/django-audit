@@ -5,11 +5,14 @@ def ip_to_ccode(ip):
     """
         Tries to convert the given ip to a country code. Returns None if no object is found.
     """
-    ip = parse_ip(ip) #convert to decimal form
-
-    try
-        obj = IPtoLoc.objects.get(ip_to__lte=ip, ip_fr__gte=ip)
-        return obj.country_code
+    
+    try:
+        ip = parse_ip(ip) #convert to decimal form
+        print ip
+        objs = IPtoLoc.objects.filter(ip_to__gte=ip, ip_fr__lte=ip)
+        print objs
+        if objs.exists():
+            return objs[0].country_code
     except Exception as e:
         print str(e)
         return None

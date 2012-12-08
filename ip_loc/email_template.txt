@@ -1,8 +1,0 @@
-Message from system admin.
-
-
-An alert of type {{ flag_type }} has been automatically generated for the following users.
-
-{{ users }}
-
--- Django-Audit-Log

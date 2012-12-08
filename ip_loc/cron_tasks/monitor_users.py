@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.conf.settings import ADMINS
+from django.conf import settings
 
 from ip_loc.models import *
 from ip_loc.helpers import std_to_decimal_ip as parse_ip
@@ -15,7 +15,7 @@ class MonitorUsers():
     """
 
     def run(self):
-        flagged_countries, flagged_tor = self.checked_audit_objects()
+        flagged_countries, flagged_tor = self.check_audit_objects()
 
         flagged_users = {
             'flagged_tor' : flagged_tor,
@@ -87,10 +87,11 @@ class MonitorUsers():
         seen_users = {} #lets hash the users we've seen so far
 
         for obj in objs:
-            if seen_users.get(obj.action_user.username):
+            user = obj.action_user
+            if seen_users.get(user.username):
                 pass
             else:
-                seen_users[obj.action_user.username] = objs.filter(action_user=user)
+                seen_users[user.username] = objs.filter(action_user=user)
         return seen_users
 
     def _clean_objects(self, objs):
@@ -104,18 +105,19 @@ class MonitorUsers():
         """
             Takes a dictionary of flagged users. Dictionary maps flag type to user set.
         """
-        admin_emails = self._get_admins(ADMINS)
+        admin_emails = self._get_admins(settings.ADMINS)
         from_email = "audit-service@example.com"
 
         for flag_type, users in flagged_users.items():
-            template_values = {
-                'type' : flag_type,
-                'users' : users,
-            }
-            subject = "Django-Audit alert: %s Flag" % flag_type
+            if len(users):
+                template_values = {
+                    'type' : flag_type,
+                    'users' : users,
+                }
+                subject = "Django-Audit alert: %s Flag" % flag_type
 
-            msg = render_to_string('ip_loc/email_template.txt',template_values)
-            send_mail(subject, msg, from_email, admin_emails, fail_silently=False)
+                msg = render_to_string('ip_loc/email_template.txt',template_values)
+                send_mail(subject, msg, from_email, admin_emails, fail_silently=False)
 
     def _get_admins(self, admins):
         return [email for name, email in admins]
