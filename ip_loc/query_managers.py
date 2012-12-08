@@ -18,7 +18,7 @@ def check_tor(ip):
     """
     ip = parse_ip(ip)
     try:
-        node = TorNode.objects.get(ip=ip)
+        TorNode.objects.get(ip=ip)
         return True
     except:
         return False

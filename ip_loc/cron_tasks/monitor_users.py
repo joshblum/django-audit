@@ -54,7 +54,6 @@ class MonitorUsers():
 
         country_flags = []
         tor_flags = []
-        print user_map
         for username, obj_list in user_map.items():
             c_codes = {}
             tor_nodes = []
@@ -109,7 +108,6 @@ class MonitorUsers():
         from_email = "audit-service@example.com"
 
         for flag_type, users in flagged_users.items():
-            print flag_type, users
             if len(users):
                 template_values = {
                     'flag_type' : flag_type,
