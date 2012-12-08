@@ -12,7 +12,7 @@ def std_to_decimal_ip(s):
 def decimal_to_std_ip(ip):
     """"
         Converts IP form decimal to standard form
-        """
+    """
     ip = int(ip)
     output = ""
     for i in range (3,-1,-1):
