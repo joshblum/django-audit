@@ -146,9 +146,6 @@ INSTALLED_APPS = (
     'audit_log',
     'registration',
     'kronos',
-
-    #todosrc
-    'todo',
     
     #django-audit
     'forum',

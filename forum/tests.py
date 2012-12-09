@@ -1,9 +1,11 @@
 from django.utils import unittest
 from django.test import Client
 from django.contrib.auth.models import User
-import time
-import profiler
+
 from forum.models import *
+
+import time
+
 
 # class TestGet(unittest.TestCase):
 #     def setUp(self):
@@ -219,9 +221,9 @@ class TestForumThreadPostGet(unittest.TestCase):
         self.client.login(username='john', password='1234')
 
     def test_details(self):
-        response = self.client.get('/admin/forum/post/1')
+        response = self.client.get('/admin/forum/post/1/')
         self.assertEqual(len(Post.objects.all()), 3)
-        self.assertEqual(len(Post.audit_log.all()), 6)
+        self.assertEqual(len(Post.audit_log.all()), 7)
         for i in Post.audit_log.all():
             self.assertEqual(i.action_user.username, "john")
             self.assertEqual(i.action_ip, "127.0.0.1")
