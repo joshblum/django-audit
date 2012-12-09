@@ -74,6 +74,7 @@ class MonitorTestBase(unittest.TestCase):
             Get monitor results for audit objects that were created.
         """
         user_monitor = MonitorUsers()
+
         flagged_countries, flagged_tor = user_monitor.check_audit_objects()
 
         return flagged_countries, flagged_tor

@@ -109,7 +109,6 @@ class MonitorUsers():
         """
         admin_emails = self._get_admins(settings.ADMINS)
         from_email = "audit-service@example.com"
-
         for flag_type, users in flagged_users.items():
             if len(users):
                 template_values = {
