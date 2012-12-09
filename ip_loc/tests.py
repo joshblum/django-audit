@@ -144,6 +144,7 @@ class TestAuditsCountryFlags(MonitorTestBase):
             self.set_log_entry(obj, ip)
     def test(self):
         self._check_flagged_users([{'user1': {'CA': ['199.126.148.30'], 'SY': ['178.253.68.175']}}], [])
+
 class TestAuditsTorFlags(MonitorTestBase):
 
     def generate_audits(self):
