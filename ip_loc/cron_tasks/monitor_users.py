@@ -59,9 +59,7 @@ class MonitorUsers():
             tor_nodes = []
             for obj in obj_list:
                 ip = obj.action_ip
-                obj.is_new = False
-                obj.save()
-
+                is_new = True
                 #convert to country code
                 code = ip_to_ccode(ip) 
                 if c_codes.get(code):
@@ -75,9 +73,16 @@ class MonitorUsers():
 
             if len(c_codes) > 1:
                 country_flags.append({username : c_codes})
+                is_new = False
 
             if len(tor_nodes):
                 tor_flags.append({username : tor_nodes})
+                is_new = False
+            
+            #only alert admins once about an object
+            obj.is_new = is_new
+            obj.save()
+
 
         return country_flags, tor_flags
         

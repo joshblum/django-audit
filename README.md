@@ -38,3 +38,13 @@ Some basic (single forum, thread, and post) can be imported by running:
 To get the server running run the following command.
 
     python manage.py runserver
+
+Testing
+----------------------------
+Tests are provided in both the `forum` app and `ip_loc` app. The tests can be run by the following:
+    
+    python manage.py test <app_name>
+
+For the `forum` app the tests verify that `audit_log` objects are created.
+
+The `ip_loc` tests verify the correctness of alerting admin when users have suspicious activity patterns.
