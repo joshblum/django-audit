@@ -2,6 +2,7 @@ from django.utils import unittest
 from django.test import Client
 from django.contrib.auth.models import User
 import time
+import profiler
 from forum.models import *
 
 # class TestGet(unittest.TestCase):
@@ -42,6 +43,10 @@ class TestForumCreation(TestBase):
             })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(Forum.objects.all()), 1)
+        self.assertEqual(len(Forum.audit_log.all()), 1)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")
 
 class TestForumThread(unittest.TestCase):
     def setUp(self):
@@ -62,6 +67,10 @@ class TestForumThread(unittest.TestCase):
             })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(Thread.objects.all()), 1)
+        self.assertEqual(len(Thread.audit_log.all()), 1)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")
 
 class TestForumThread2(unittest.TestCase):
     def setUp(self):
@@ -82,6 +91,10 @@ class TestForumThread2(unittest.TestCase):
             })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(Thread.objects.all()), 2)
+        self.assertEqual(len(Thread.audit_log.all()), 2)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")
 
 class TestForumCreation2(unittest.TestCase):
     def setUp(self):
@@ -101,6 +114,10 @@ class TestForumCreation2(unittest.TestCase):
             })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(Forum.objects.all()), 2)
+        self.assertEqual(len(Forum.audit_log.all()), 2)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")
 
 class TestForumThread3(unittest.TestCase):
     def setUp(self):
@@ -121,12 +138,13 @@ class TestForumThread3(unittest.TestCase):
             })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(Thread.objects.all()), 3)
+        self.assertEqual(len(Thread.audit_log.all()), 3)
 
 class TestForumThreadPost(unittest.TestCase):
     def setUp(self):
         #super(TestForumPost, self).setUp()
         self.client = Client(HTTP_USER_AGENT='Mozilla/5.0')
-        print self.client.login(username='john', password='1234')
+        self.client.login(username='john', password='1234')
 
     def test_details(self):
         response = self.client.post('/admin/forum/post/add/',
@@ -140,3 +158,53 @@ class TestForumThreadPost(unittest.TestCase):
             })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(Post.objects.all()), 1)
+        self.assertEqual(len(Post.audit_log.all()), 2)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")
+
+class TestForumThreadPost2(unittest.TestCase):
+    def setUp(self):
+        #super(TestForumPost, self).setUp()
+        self.client = Client(HTTP_USER_AGENT='Mozilla/5.0')
+        print self.client.login(username='john', password='1234')
+
+    def test_details(self):
+        response = self.client.post('/admin/forum/post/add/',
+            {
+            'thread': '2',
+            'author': '1',
+            'body': 'Test thread 5678',
+            'time_0': time.strftime("%Y-%m-%d"),
+            'time_1': time.strftime("%H:%M:%S"),
+            '_save': 'Save'
+            })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(Post.objects.all()), 2)
+        self.assertEqual(len(Post.audit_log.all()), 4)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")
+
+class TestForumThreadPost3(unittest.TestCase):
+    def setUp(self):
+        #super(TestForumPost, self).setUp()
+        self.client = Client(HTTP_USER_AGENT='Mozilla/5.0')
+        self.client.login(username='john', password='1234')
+
+    def test_details(self):
+        response = self.client.post('/admin/forum/post/add/',
+            {
+            'thread': '1',
+            'author': '1',
+            'body': 'Test thread 1234 on forum 2',
+            'time_0': time.strftime("%Y-%m-%d"),
+            'time_1': time.strftime("%H:%M:%S"),
+            '_save': 'Save'
+            })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(Post.objects.all()), 3)
+        self.assertEqual(len(Post.audit_log.all()), 6)
+        for i in Thread.audit_log.all():
+            self.assertEqual(i.action_user.username, "john")
+            self.assertEqual(i.action_ip, "127.0.0.1")

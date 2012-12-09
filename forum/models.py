@@ -43,6 +43,8 @@ class Forum(models.Model):
 
     objects = ForumManager()
 
+    audit_log = AuditLog()
+
     def _get_forum_latest_post(self):
         """This gets the latest post for the forum"""
         if not hasattr(self, '__forum_latest_post'):
@@ -168,6 +170,8 @@ class Thread(models.Model):
     posts = models.IntegerField(_("Posts"), default=0)
     views = models.IntegerField(_("Views"), default=0)
     latest_post_time = models.DateTimeField(_("Latest Post Time"), blank=True, null=True)
+
+    audit_log = AuditLog()
 
     def _get_thread_latest_post(self):
         """This gets the latest post for the thread"""
