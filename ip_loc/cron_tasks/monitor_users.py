@@ -100,9 +100,7 @@ class MonitorUsers():
 
         for obj in objs:
             user = obj.action_user
-            if seen_users.get(user.username):
-                pass
-            else:
+            if not seen_users.get(user.username):
                 seen_users[user.username] = objs.filter(action_user=user)
         return seen_users
 
@@ -145,7 +143,7 @@ class MonitorUsers():
         if flagged_country_users.exists():
             self._email_admin_util(COUNTRY_FLAG, flagged_country_users)
             self._update_objs(flagged_country_users)
-            
+
         if flagged_tor_users.exists():
             self._email_admin_util(TOR_FLAG, flagged_tor_users)
             self._update_objs(flagged_tor_users)
