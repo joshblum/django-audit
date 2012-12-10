@@ -1,0 +1,15 @@
+import pstats
+
+p = pstats.Stats('bulk_stats-forums.txt')
+#p.strip_dirs().print_stats()
+p.strip_dirs().sort_stats('cumulative').print_stats(10)
+p.strip_dirs().sort_stats('time').print_stats(10)
+p = pstats.Stats('bulk_stats-threads.txt')
+p.strip_dirs().sort_stats('cumulative').print_stats(10)
+p.strip_dirs().sort_stats('time').print_stats(10)
+p = pstats.Stats('bulk_stats-posts.txt')
+p.strip_dirs().sort_stats('cumulative').print_stats(10)
+p.strip_dirs().sort_stats('time').print_stats(10)
+p = pstats.Stats('bulk_stats-posts-get.txt')
+p.strip_dirs().sort_stats('cumulative').print_stats(10)
+p.strip_dirs().sort_stats('time').print_stats(10)
