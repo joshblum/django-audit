@@ -30,6 +30,7 @@ class FlaggedUser(models.Model):
     flag_type = models.CharField(max_length=40) #tor flag or country flag
     data = models.TextField()
     
+    is_new = models.BooleanField(default=True)
     flagged = models.BooleanField(default=True) #admin can clear the flag if necessary
 
     date_created = models.DateTimeField(auto_now=True, default=datetime.now())

@@ -100,7 +100,7 @@ class MonitorTestBase(unittest.TestCase):
             
             self.assertEqual(str(test_obj.user), str(obj.user))
             self.assertEqual(str(test_obj.flag_type), str(obj.flag_type))
-            self.assertEqual(str(test_obj.data), str(obj.data))
+            self.assertEqual(json.loads(str(test_obj.data)), str(obj.data))
             
 
     def set_log_entry(self, obj, ip):

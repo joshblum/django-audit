@@ -140,12 +140,20 @@ class MonitorUsers():
             Takes a dictionary of flagged users. Dictionary maps flag type to user set.
         """
 
-        flagged_country_users = FlaggedUser.objects.filter(flag_type=COUNTRY_FLAG, flagged=True)
-        flagged_tor_users = FlaggedUser.objects.filter(flag_type=TOR_FLAG, flagged=True)
+        flagged_country_users = FlaggedUser.objects.filter(flag_type=COUNTRY_FLAG, is_new=True, flagged=True)
+        flagged_tor_users = FlaggedUser.objects.filter(flag_type=TOR_FLAG, is_new=True, flagged=True)
         if flagged_country_users.exists():
             self._email_admin_util(COUNTRY_FLAG, flagged_country_users)
+            self._update_objs(flagged_country_users)
+            
         if flagged_tor_users.exists():
             self._email_admin_util(TOR_FLAG, flagged_tor_users)
+            self._update_objs(flagged_tor_users)
+
+    def _update_objs(self, objs):
+        for obj in objs:
+            obj.is_new = False
+            obj.save()
 
     def _email_admin_util(self, flag_type, objs):
         admin_emails = self._get_admins(settings.ADMINS)
