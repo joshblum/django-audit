@@ -47,7 +47,7 @@ class TestProfiler(TestBase):
         for i in xrange(1,2000):
             response = self.client.get('/admin/forum/post/' + str(i) + '/')
 
-    def _details(self):
+    def test_details(self):
         cProfile.runctx("self.create_forums()", globals(), locals(), "%sbulk_stats-forums.txt"%BASE_PATH)
         cProfile.runctx("self.create_threads()", globals(), locals(), "%sbulk_stats-threads.txt"%BASE_PATH)
         cProfile.runctx("self.create_posts()", globals(), locals(), "%sbulk_stats-posts.txt"%BASE_PATH)
