@@ -146,7 +146,6 @@ INSTALLED_APPS = (
     'audit_log',
     'registration',
     'kronos',
-    'liststyle',
     
     #django-audit
     'forum',
