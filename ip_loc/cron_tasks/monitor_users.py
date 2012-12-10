@@ -7,7 +7,15 @@ from ip_loc.models import *
 from ip_loc.helpers import std_to_decimal_ip as parse_ip
 from ip_loc.query_managers import *
 
+from datetime import datetime, timedelta
+
 import urllib
+
+DAYS = 2
+EMAIL_ADMIN = getattr(settings, 'LOC_EMAIL_ADMIN', True)
+FROM_EMAIL = getattr(settings, 'LOC_FROM_EMAIL', "audit-service@example.com")
+TOR_FLAG = 'flagged_tor'
+COUNTRY_FLAG = 'flagged_countries'
 
 class MonitorUsers():
     """
@@ -18,10 +26,13 @@ class MonitorUsers():
         flagged_countries, flagged_tor = self.check_audit_objects()
 
         flagged_users = {
-            'flagged_tor' : flagged_tor,
-            'flagged_countries' : flagged_countries
+            TOR_FLAG : flagged_tor,
+            COUNTRY_FLAG : flagged_countries
         }
-        self.email_admin(flagged_users)
+
+        self.flag_users(flagged_users) #store flagged users in the database
+        if EMAIL_ADMIN:
+            self.email_admin()
 
     def check_audit_objects(self):
         """
@@ -59,7 +70,9 @@ class MonitorUsers():
             tor_nodes = []
             for obj in obj_list:
                 ip = obj.action_ip
-                is_new = True
+                obj.is_new = False
+                obj.save()
+
                 #convert to country code
                 code = ip_to_ccode(ip) 
                 if c_codes.get(code):
@@ -73,16 +86,9 @@ class MonitorUsers():
 
             if len(c_codes) > 1:
                 country_flags.append({username : c_codes})
-                is_new = False
 
             if len(tor_nodes):
                 tor_flags.append({username : tor_nodes})
-                is_new = False
-            
-            #only alert admins once about an object
-            obj.is_new = is_new
-            obj.save()
-
 
         return country_flags, tor_flags
         
@@ -106,24 +112,52 @@ class MonitorUsers():
         """
         objs.filter(action_ip=None).delete()
 
+        date = datetime.today() - timedelta(days=DAYS)
+        
+        objs.filter(action_date__lt=date, is_new=False).delete()
+        
         return objs.filter(is_new=True)
 
-    def email_admin(self, flagged_users):
+    def flag_users(self, flagged_users):
+        """
+            Adds flagged users to the database.
+        """
+        for flag_type, flagged_users in flagged_users.items():
+            for flagged_user in flagged_users:
+                try:
+                    username =  flagged_user.keys()[0]
+                    data = flagged_user[username]
+                    user = User.objects.get(username=username)
+                    
+                    flagged_user = FlaggedUser(user=user, flag_type=flag_type, data=data)
+                    flagged_user.save()
+                
+                except Exception as e:
+                    print str(e)
+
+    def email_admin(self):
         """
             Takes a dictionary of flagged users. Dictionary maps flag type to user set.
         """
-        admin_emails = self._get_admins(settings.ADMINS)
-        from_email = "audit-service@example.com"
-        for flag_type, users in flagged_users.items():
-            if len(users):
-                template_values = {
-                    'flag_type' : flag_type,
-                    'users' : users,
-                }
-                subject = "Django-Audit alert: %s Flag" % flag_type
 
-                msg = render_to_string('ip_loc/email_template.txt',template_values)
-                send_mail(subject, msg, from_email, admin_emails, fail_silently=False)
+        flagged_country_users = FlaggedUser.objects.filter(flag_type=COUNTRY_FLAG, flagged=True)
+        flagged_tor_users = FlaggedUser.objects.filter(flag_type=TOR_FLAG, flagged=True)
+        if flagged_country_users.exists():
+            self._email_admin_util(COUNTRY_FLAG, flagged_country_users)
+        if flagged_tor_users.exists():
+            self._email_admin_util(TOR_FLAG, flagged_tor_users)
+
+    def _email_admin_util(self, flag_type, objs):
+        admin_emails = self._get_admins(settings.ADMINS)
+
+        template_values = {
+            'flag_type' : flag_type,
+            'users' : objs,
+        }
+        subject = "Django-Audit alert: %s Flag" % flag_type
+
+        msg = render_to_string('ip_loc/email_template.txt',template_values)
+        send_mail(subject, msg, FROM_EMAIL, admin_emails, fail_silently=False)
 
     def _get_admins(self, admins):
         return [email for name, email in admins]

@@ -10,7 +10,7 @@ class DownloadIP():
         Downloads and updates the IP address database
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         if not filename:
             filename = "http://software77.net/geo-ip/?DL=2"
         
