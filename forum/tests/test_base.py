@@ -2,6 +2,11 @@ from django.utils import unittest
 from django.test import Client
 from django.contrib.auth.models import User
 
+FORUM_ADD = '/admin/forum/forum/add/'
+THREAD_ADD = '/admin/forum/thread/add/'
+POST_BASE = '/admin/forum/post/'
+POST_ADD = POST_BASE + 'add/'
+
 class TestBase(unittest.TestCase):
     def setUp(self):
         try:
@@ -19,6 +24,7 @@ class TestBase(unittest.TestCase):
         """
             Assert that the object type was created and that audit logs were created
         """
+
         self.assertEqual(obj_type.objects.all().count(), obj_count)
         self.assertEqual(obj_type.audit_log.all().count(), audit_count)
         self.assertAuditDetails(obj_type)
@@ -30,3 +36,7 @@ class TestBase(unittest.TestCase):
         for i in obj_type.audit_log.all():
             self.assertEqual(i.action_user.username, "john")
             self.assertEqual(i.action_ip, "127.0.0.1")
+
+    def assertAuditType(self, obj_type, action_type):
+
+        self.assertTrue(obj_type.audit_log.filter(action_type=action_type).exists())

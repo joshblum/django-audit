@@ -2,11 +2,10 @@ import cProfile
 import random
 import time
 
-from test_base import TestBase
+from test_base import TestBase, FORUM_ADD, THREAD_ADD, POST_BASE, POST_ADD
 
-FORUM_ADD = '/admin/forum/forum/add/'
-THREAD_ADD = '/admin/forum/thread/add/'
-POST_ADD = '/admin/forum/post/add/'
+
+BASE_PATH = 'forum/tests/profiling/'
 
 class TestProfiler(TestBase):
     
@@ -48,8 +47,8 @@ class TestProfiler(TestBase):
         for i in xrange(1,2000):
             response = self.client.get('/admin/forum/post/' + str(i) + '/')
 
-    def test_details(self):
-        cProfile.runctx("self.create_forums()", globals(), locals(), "bulk_stats-forums.txt")
-        cProfile.runctx("self.create_threads()", globals(), locals(), "bulk_stats-threads.txt")
-        cProfile.runctx("self.create_posts()", globals(), locals(), "bulk_stats-posts.txt")
-        cProfile.runctx("self.check_posts()", globals(), locals(), "bulk_stats-posts-get.txt")
+    def _details(self):
+        cProfile.runctx("self.create_forums()", globals(), locals(), "%sbulk_stats-forums.txt"%BASE_PATH)
+        cProfile.runctx("self.create_threads()", globals(), locals(), "%sbulk_stats-threads.txt"%BASE_PATH)
+        cProfile.runctx("self.create_posts()", globals(), locals(), "%sbulk_stats-posts.txt"%BASE_PATH)
+        cProfile.runctx("self.check_posts()", globals(), locals(), "%sbulk_stats-posts-get.txt"%BASE_PATH)
