@@ -9,8 +9,9 @@ from django.utils import simplejson as json
 
 from ip_loc.cron_tasks.download_tor import DownloadTor
 from ip_loc.cron_tasks.download_ip import DownloadIP
-from ip_loc.cron_tasks.monitor_users import *
-from ip_loc.models import FlaggedUser
+from ip_loc.cron_tasks.monitor_users import MonitorUsers, TOR_FLAG, COUNTRY_FLAG
+
+from audit_alert.models import FlaggedUser
 
 from forum.models import *
 
@@ -77,7 +78,7 @@ class MonitorTestBase(unittest.TestCase):
         """
             Get monitor results for audit objects that were created.
         """
-        user_monitor = MonitorUsers()
+        user_monitor = MonitorUsers([COUNTRY_FLAG, TOR_FLAG])
         user_monitor.run()
 
     def _check_flagged_users(self, flagged_countries=[], flagged_tor=[]):
@@ -125,7 +126,7 @@ class MonitorTestBase(unittest.TestCase):
 
     def tearDown(self):
         Post.objects.all().delete()
-        self.user.delete()
+        User.objects.all().delete()
         FlaggedUser.objects.all().delete()
 
 class TestNoAudits(MonitorTestBase):

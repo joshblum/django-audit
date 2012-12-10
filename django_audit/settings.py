@@ -148,8 +148,10 @@ INSTALLED_APPS = (
     'kronos',
     
     #django-audit
-    'forum',
+    'audit_alert',
     'ip_loc',
+    'xss_detect',
+    'forum',
 )
 
 # A sample logging configuration. The only tangible logging

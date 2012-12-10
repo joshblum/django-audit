@@ -2,7 +2,7 @@ from django.db import models
 
 from django.contrib import admin
 
-from audit_log.admin import DefaultAuditAdmin
+from audit_log.admin import DefaultAuditAdmin, _check_name
 
 from ip_loc.models import *
 
@@ -14,9 +14,6 @@ def reg_admin():
         if _check_name(model):
             admin.site.unregister(model)
             admin.site.register(model, LocationAuditAdmin)
-
-def _check_name(cls):
-    return "AuditLogEntry" in cls.__name__
 
 class LocationAuditAdmin(DefaultAuditAdmin):
     def action_user_friendly(self, obj):
