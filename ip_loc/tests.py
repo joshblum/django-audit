@@ -3,7 +3,6 @@
     File creates audit-log objects from various countries and verifies the output of the emails sent
 """
 
-from django.test import Client
 from django.db import models
 from django.utils import simplejson as json
 
@@ -12,6 +11,7 @@ from ip_loc.cron_tasks.download_ip import DownloadIP
 from ip_loc.cron_tasks.monitor_users import MonitorUsers, TOR_FLAG, COUNTRY_FLAG
 
 from audit_alert.models import FlaggedUser
+from audit_alert.tests import AuditTestBase
 
 from forum.models import *
 
@@ -27,13 +27,12 @@ TEST_IP_ADDR = ['199.126.148.30','178.253.68.175','31.40.117.110','18.228.1.190'
 
 TEST_TOR_ADDR = ['18.228.0.188', '2.29.81.63', '100.1.58.105',] #random tor nodes to be used for testing
 
-class MonitorTestBase(unittest.TestCase):
+class MonitorTestBase(AuditTestBase):
 
     def setUp(self):
-        self.maxDiff = None
+        super(MonitorTestBase, self).setUp([COUNTRY_FLAG, TOR_FLAG])
         self.setup_ip_addr()
         self.setup_tor_addr()
-        self.forum, self.thread, self.user = self.setup_forum_objects()
         self.generate_audits()
         self.get_flagged_users()
 
@@ -80,28 +79,6 @@ class MonitorTestBase(unittest.TestCase):
         """
         user_monitor = MonitorUsers([COUNTRY_FLAG, TOR_FLAG])
         user_monitor.run()
-
-    def _check_flagged_users(self, flagged_countries=[], flagged_tor=[]):
-        """
-            Assert that the correct users are flagged. 
-        """
-        
-        test_countries = FlaggedUser.objects.filter(flag_type=COUNTRY_FLAG)
-        test_tor = FlaggedUser.objects.filter(flag_type=TOR_FLAG)
-
-        self.assertEqual(len(test_countries), len(flagged_countries))
-
-        self.assertEqual(len(test_tor), len(flagged_tor))
-
-        self._test_objects(test_countries, flagged_countries)
-        self._test_objects(test_tor, flagged_tor)
-
-    def _test_objects(self, test_objs, objs):
-        for test_obj, obj in zip(test_objs, objs):
-            
-            self.assertEqual(str(test_obj.user), str(obj.user))
-            self.assertEqual(str(test_obj.flag_type), str(obj.flag_type))
-            self.assertEqual(json.loads(str(test_obj.data)), str(obj.data))
             
 
     def set_log_entry(self, obj, ip):
@@ -124,17 +101,12 @@ class MonitorTestBase(unittest.TestCase):
         obj.save()
         return obj
 
-    def tearDown(self):
-        Post.objects.all().delete()
-        User.objects.all().delete()
-        FlaggedUser.objects.all().delete()
-
 class TestNoAudits(MonitorTestBase):
     """
         Tests with no audits that empty lists are returned
     """
     def test(self):
-        self._check_flagged_users()
+        self._check_flagged_users(self.flags)
 
 class TestAuditsNoFlags(MonitorTestBase):
 
@@ -146,7 +118,7 @@ class TestAuditsNoFlags(MonitorTestBase):
         post.save()
         
     def test(self):
-        self._check_flagged_users()
+        self._check_flagged_users(self.flags)
 
 class TestAuditsCountryFlags(MonitorTestBase):
 
@@ -167,8 +139,10 @@ class TestAuditsCountryFlags(MonitorTestBase):
             FlaggedUser(user=self.user, flag_type=COUNTRY_FLAG, data=json.dumps(country_data))
         ]
 
-        self._check_flagged_users(country_flags, [])
-
+        self._check_flagged_users({
+            'flagged_countries' : country_flags,
+            'flagged_tor':  [],
+            })
 class TestAuditsTorFlags(MonitorTestBase):
 
     def generate_audits(self):
@@ -187,7 +161,10 @@ class TestAuditsTorFlags(MonitorTestBase):
             FlaggedUser(user=self.user, flag_type=TOR_FLAG, data=json.dumps(tor_data))
         ]
 
-        self._check_flagged_users([], tor_flags)
+        self._check_flagged_users({
+            'flagged_countries' : [],
+            'flagged_tor':  tor_flags,
+            })
 
 class TestAuditsCountryAndTorFlags(MonitorTestBase):
 
@@ -212,4 +189,7 @@ class TestAuditsCountryAndTorFlags(MonitorTestBase):
         tor_flags = [
             FlaggedUser(user=self.user, flag_type=TOR_FLAG, data=json.dumps(tor_data))
         ]
-        self._check_flagged_users(country_flags, tor_flags)
+        self._check_flagged_users({
+            'flagged_countries' : country_flags,
+            'flagged_tor':  tor_flags,
+            })
