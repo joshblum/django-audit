@@ -37,20 +37,6 @@ class AuditTestBase(unittest.TestCase):
 
         return forum, thread, user
 
-    def generate_audits(self):
-        """
-            Default message generates no audit objects.
-            Should be overridden by subsequent test methods.
-        """
-        pass
-
-    def get_flagged_users(self):
-        """
-            Get monitor results for audit objects that were created.
-            Should be overridden by subsequent test methods.
-        """
-        pass
-
     def _check_flagged_users(self, *args, **kwargs):
         """
             Assert that the correct users are flagged. 
@@ -69,7 +55,11 @@ class AuditTestBase(unittest.TestCase):
             self.assertEqual(str(test_obj.user), str(obj.user))
             self.assertEqual(str(test_obj.flag_type), str(obj.flag_type))
             self.assertEqual(json.loads(str(test_obj.data)), str(obj.data))
-            
+    
+    def create_post(self):
+        post = Post(thread=self.thread, body="test_body", author=self.user)
+        post.save()
+        return post
 
     def tearDown(self):
         Post.objects.all().delete()

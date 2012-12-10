@@ -3,7 +3,6 @@
     File creates audit-log objects from various countries and verifies the output of the emails sent
 """
 
-from django.db import models
 from django.utils import simplejson as json
 
 from ip_loc.cron_tasks.download_tor import DownloadTor
@@ -82,24 +81,10 @@ class MonitorTestBase(AuditTestBase):
             
 
     def set_log_entry(self, obj, ip):
-        self._change_ip(obj, ip)
-        self._change_user(obj, self.user)
-
-    def _change_ip(self, obj, ip):
-        """
-            Takes an AuditLogObject and changes the action_ip to the given ip.
-        """
         obj.action_ip = ip
-        obj.save()
-        return obj
+        obj.action_user = self.user
 
-    def _change_user(self, obj, user):
-        """
-            Sets the user of the object
-        """
-        obj.action_user = user
         obj.save()
-        return obj
 
 class TestNoAudits(MonitorTestBase):
     """
@@ -114,8 +99,7 @@ class TestAuditsNoFlags(MonitorTestBase):
         """
             Generate audit objects but no audits. All ips are from the same country, no IPs are tor nodes.
         """
-        post = Post(thread=self.thread, body="test_body", author=self.user)
-        post.save()
+        post = self.create_post()
         
     def test(self):
         self._check_flagged_users(self.flags)
@@ -126,8 +110,7 @@ class TestAuditsCountryFlags(MonitorTestBase):
         """
             Generate audit objects and changes to use different country ips to generate a country flag
         """
-        post = Post(thread=self.thread, body="test_body", author=self.user)
-        post.save()
+        post = self.create_post()
 
         for obj, ip in zip(post.audit_log.all(), TEST_IP_ADDR):
             self.set_log_entry(obj, ip)
@@ -140,8 +123,8 @@ class TestAuditsCountryFlags(MonitorTestBase):
         ]
 
         self._check_flagged_users({
-            'flagged_countries' : country_flags,
-            'flagged_tor':  [],
+            COUNTRY_FLAG : country_flags,
+            TOR_FLAG :  [],
             })
 class TestAuditsTorFlags(MonitorTestBase):
 
@@ -149,8 +132,7 @@ class TestAuditsTorFlags(MonitorTestBase):
         """
             Generate audit objects and modfy the entry log to reflect a tor node to generate a tor flag
         """
-        post = Post(thread=self.thread, body="test_body", author=self.user)
-        post.save()
+        post = self.create_post()
 
         log_entry = post.audit_log.all()[0]
         self.set_log_entry(log_entry, TEST_TOR_ADDR[0])
@@ -162,8 +144,8 @@ class TestAuditsTorFlags(MonitorTestBase):
         ]
 
         self._check_flagged_users({
-            'flagged_countries' : [],
-            'flagged_tor':  tor_flags,
+            COUNTRY_FLAG : [],
+            TOR_FLAG :  tor_flags,
             })
 
 class TestAuditsCountryAndTorFlags(MonitorTestBase):
@@ -172,8 +154,7 @@ class TestAuditsCountryAndTorFlags(MonitorTestBase):
         """
             Generate audit objects for both country and tor flags to be generated. 
         """
-        post = Post(thread=self.thread, body="test_body", author=self.user)
-        post.save()
+        post = self.create_post()
 
         for obj, ip in zip(post.audit_log.all(), TEST_TOR_ADDR):
             self.set_log_entry(obj, ip)
@@ -190,6 +171,6 @@ class TestAuditsCountryAndTorFlags(MonitorTestBase):
             FlaggedUser(user=self.user, flag_type=TOR_FLAG, data=json.dumps(tor_data))
         ]
         self._check_flagged_users({
-            'flagged_countries' : country_flags,
-            'flagged_tor':  tor_flags,
+            COUNTRY_FLAG : country_flags,
+            TOR_FLAG :  tor_flags,
             })

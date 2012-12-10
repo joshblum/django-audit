@@ -66,7 +66,7 @@ class CronBase():
 
         for obj in objs:
             user = obj.action_user
-            if not seen_users.get(user.username):
+            if user and not seen_users.get(user.username):
                 seen_users[user.username] = objs.filter(action_user=user)
         return seen_users
 

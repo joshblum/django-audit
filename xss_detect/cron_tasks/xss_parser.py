@@ -9,8 +9,8 @@ from audit_log.admin import _check_name
 
 from datetime import datetime, timedelta
 
-XSS_FLAG = 'flagged_request'
-FLAG_STRINGS = ['type=text/javscript', '</script>', '</style>']
+XSS_FLAG = 'flagged_xss'
+FLAG_STRINGS = ['<script>', '<style>', 'type=text/javscript', '</script>', '</style>']
 
 class XSSParser(CronBase):
     """
@@ -39,9 +39,12 @@ class XSSParser(CronBase):
             if len(flags):
                 xss_flags.append({username : flags})
 
-        return country_flags, tor_flags
+        return {
+            XSS_FLAG : xss_flags
+        }
 
-    def _check_string(string):
+    def _check_string(self, string):
+        string = str(string)
         flagged = False
         for item in FLAG_STRINGS:
             if item in string:
