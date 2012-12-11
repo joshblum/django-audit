@@ -18,7 +18,7 @@ from forum.models import *
 
 import unittest
 
-TEST_XSS_INPUT = ["?user=<script>alert(document.cookie)</script>"]
+TEST_XSS_INPUT = ["?user=<script>alert(document.cookie)</script>", "3f757365723d3c7363726970743e616c65727428646f63756d656e742e636f6f6b6965293c2f7363726970743e22"]
 
 class XSSParserTestBase(AuditTestBase):
 
