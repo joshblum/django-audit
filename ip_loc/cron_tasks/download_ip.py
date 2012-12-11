@@ -19,10 +19,13 @@ class DownloadIP():
 
     def run(self):
         url, directory = self.DEFAULT_IP_URL, self.DEFAULT_IP_DIRECTORY
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         dest = self.get_unzipped(url, directory)
         data = self.read_data(dest)
         self.clear_table()
         self.add_data(data)
+        os.removedirs(directory)
 
     def get_unzipped(self, url, directory):
         print "Downloading IP list file"

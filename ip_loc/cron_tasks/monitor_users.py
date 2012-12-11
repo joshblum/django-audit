@@ -31,17 +31,16 @@ class MonitorUsers(CronBase):
                 ip = obj.action_ip
 
                 #convert to country code
-                code = ip_to_ccode(ip) 
+                code = ip_to_ccode(ip)
                 if c_codes.get(code):
                     c_codes[code].append(ip)
                 else:
                     c_codes[code] = [ip]
-
                 #check if a tor node
                 if check_tor(ip):
                     tor_nodes.append(ip)
-
             if len(c_codes) > 1:
+                print username
                 country_flags.append({username : c_codes})
 
             if len(tor_nodes):

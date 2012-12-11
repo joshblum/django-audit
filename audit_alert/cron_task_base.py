@@ -26,7 +26,6 @@ class CronBase():
     def run(self):
 
         self.flagged_users = self.check_audit_objects(self.flagged_users)
-        
         self.flag_users(self.flagged_users)
 
     def check_audit_objects(self, flag_dict):
