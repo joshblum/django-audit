@@ -19,4 +19,5 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('django_audit.views',
     url(r'accounts/profile', 'home'),
+    url(r'$^', 'home')
 )

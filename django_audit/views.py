@@ -3,4 +3,4 @@ from django.shortcuts import redirect
 
 @login_required
 def home(request):
-    return redirect('/forum')
+    return redirect('/admin/')
