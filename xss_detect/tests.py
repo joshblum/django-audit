@@ -96,7 +96,7 @@ class TestAuditsGETFlag(XSSParserTestBase):
 
     def generate_audits(self):
         """
-            Generate audit objects and inject javascript into the url
+            Generate audit objects and inject javascript into the get dict
         """
         post = self.create_post()
 
@@ -110,7 +110,7 @@ class TestAuditsPOSTFlag(XSSParserTestBase):
 
     def generate_audits(self):
         """
-            Generate audit objects and inject javascript into the url
+            Generate audit objects and inject javascript into the post dict
         """
         post = self.create_post()
 
@@ -124,7 +124,7 @@ class TestAuditsAllFlags(XSSParserTestBase):
 
     def generate_audits(self):
         """
-            Generate audit objects and inject javascript into the url
+            Generate audit objects and inject javascript into the url, get, and post dict
         """
         post = self.create_post()
 
