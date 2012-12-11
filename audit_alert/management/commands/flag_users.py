@@ -9,11 +9,12 @@ class Command(NoArgsCommand):
     def handle(self, *args, **options):
         self.stdout.write('Starting...\n')
 
-        parser = XSSParser([XSS_FLAG])
-        parser.run()
         user_monitor = MonitorUsers([COUNTRY_FLAG, TOR_FLAG])
         user_monitor.run()
-        
+
+        parser = XSSParser([XSS_FLAG])
+        parser.run()
+
         self.stdout.write('Done \n')
 
 
