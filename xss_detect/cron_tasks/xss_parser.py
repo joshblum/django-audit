@@ -30,7 +30,7 @@ class XSSParser(CronBase):
             flags = []
             for obj in obj_list:
                 url = obj.action_request_url
-                get = obj.action_post_params,
+                get = obj.action_get_params,
                 post = obj.action_post_params
                 for item in [url, get, post]:
                     if self._check_string(item):
