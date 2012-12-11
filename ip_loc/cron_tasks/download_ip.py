@@ -30,7 +30,7 @@ class DownloadIP():
         try:
             name, hdrs = urllib.urlretrieve(url, name)
         except IOError, e:
-            self.stdout("Can't retrieve %r to %r: %s" % (url, directory, e))
+            print "Can't retrieve %r to %r: %s" % (url, directory, e)
             return
         try:
             z = zipfile.ZipFile(name)
