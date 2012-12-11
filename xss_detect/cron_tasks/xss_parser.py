@@ -49,4 +49,5 @@ class XSSParser(CronBase):
         for item in FLAG_STRINGS:
             if item in string:
                 flagged = True
+                break
         return flagged
