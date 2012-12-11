@@ -10,7 +10,7 @@ from audit_log.admin import _check_name
 from datetime import datetime, timedelta
 
 XSS_FLAG = 'flagged_xss'
-FLAG_STRINGS = ['<script>', '<style>', 'type=text/javscript', '</script>', '</style>']
+FLAG_STRINGS = ['<script>', '<style>', 'type=text/javscript', '</script>', '</style>', '3c7363726970743e', '3c7374796c653e','3c2f7363726970743e', '3c2f7374796c653e', '747970653d746578742f6a6176736372697074' ]
 
 class XSSParser(CronBase):
     """
