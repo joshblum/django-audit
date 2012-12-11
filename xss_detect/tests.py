@@ -119,4 +119,18 @@ class TestAuditsPOSTFlag(XSSParserTestBase):
 
     def test(self):
         self.generic_t_est()
+
+class TestAuditsAllFlags(XSSParserTestBase):
+
+    def generate_audits(self):
+        """
+            Generate audit objects and inject javascript into the url
+        """
+        post = self.create_post()
+
+        for obj, xss in zip(post.audit_log.all(), TEST_XSS_INPUT):
+            self.set_log_entry(obj, xss, xss, xss)
+
+    def test(self):
+        self.generic_t_est()
     

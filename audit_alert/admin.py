@@ -25,6 +25,7 @@ class LocationAuditAdmin(DefaultAuditAdmin):
         return search_by_user
 
     action_user_friendly.allow_tags = True
+    action_user_friendly.short_description = 'User'
 
     def _is_flagged(self, user):
         return FlaggedUser.objects.filter(user=user, flagged=True).exists()
