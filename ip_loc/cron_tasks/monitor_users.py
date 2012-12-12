@@ -40,7 +40,6 @@ class MonitorUsers(CronBase):
                 if check_tor(ip):
                     tor_nodes.append(ip)
             if len(c_codes) > 1:
-                print username
                 country_flags.append({username : c_codes})
 
             if len(tor_nodes):
